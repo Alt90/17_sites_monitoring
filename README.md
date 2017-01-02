@@ -13,6 +13,6 @@
 
 Запуск:
 
-    python check_sites_health.py path/to/file.txt *
+    python check_sites_health.py --file path/to/file.txt *
 
 *Файл содержит строки с адресами сайтов.
