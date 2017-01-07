@@ -33,7 +33,7 @@ def get_domain_expiration_date(domain_name):
         response = whois.query(domain_name)
         if response is not None:
             month_later = datetime.today() + timedelta(days=30)
-            return(response.expiration_date > month_later)
+            return response.expiration_date > month_later
         else:
             return False
     return True
@@ -53,25 +53,25 @@ def get_domain(url):
     return None
 
 
-def print_status(black_list):
-    if not black_list:
+def print_status(urls_list):
+    if not urls_list:
         print('All is OK')
     else:
-        for url in black_list:
+        for url in urls_list:
             print('%s - not health!' % url)
 
 
-def сheck_sites(url_list):
-    black_list = []
-    for url in url_list:
-        server_status = is_server_respond_with_200(url)
-        domain_status = get_domain_expiration_date(get_domain(url))
-        if (not server_status or not domain_status):
-            black_list.append(url)
-    print_status(black_list)
+def is_site_health_ok(url):
+    is_server_health = is_server_respond_with_200(url)
+    is_domain_health = get_domain_expiration_date(get_domain(url))
+    return is_server_health and is_domain_health
+
+
+def return_not_heaith_site(urls_list):
+    return [url for url in urls_list if not is_site_health_ok(url)]
 
 
 if __name__ == '__main__':
     args = get_args()
     url_list = load_urls4check(args.file)
-    сheck_sites(url_list)
+    print_status(return_not_heaith_site(url_list))
